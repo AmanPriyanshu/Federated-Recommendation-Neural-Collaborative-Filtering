@@ -20,6 +20,7 @@ class NeuralCollaborativeFiltering(torch.nn.Module):
         self.output_logits = torch.nn.Linear(predictive_factor, 1)
         self.model_blending = 0.5           # alpha parameter, equation 13 in the paper
         self.initialize_weights()
+        self.join_output_weights()
 
     def initialize_weights(self):
         torch.nn.init.normal_(self.mlp_user_embeddings.weight, std=0.01)
@@ -51,6 +52,18 @@ class NeuralCollaborativeFiltering(torch.nn.Module):
     def join_output_weights(self):
         W = torch.nn.Parameter(torch.cat((self.model_blending*self.gmf_out.weight, (1-self.model_blending)*self.mlp_out.weight), dim=1))
         self.output_logits.weight = W
+
+    def layer_setter(self, model, model_copy):
+        for m, mc in zip(model.parameters(), model_copy.parameters()):
+            mc.data[:] = m.data[:]
+
+    def load_server_weights(self, server_model):
+        self.layer_setter(server_model.mlp_item_embeddings, self.mlp_item_embeddings)
+        self.layer_setter(server_model.gmf_item_embeddings, self.gmf_item_embeddings)
+        self.layer_setter(server_model.mlp, self.mlp)
+        self.layer_setter(server_model.gmf_out, self.gmf_out)
+        self.layer_setter(server_model.mlp_out, self.mlp_out)
+        self.layer_setter(server_model.output_logits, self.output_logits)
 
 if __name__ == '__main__':
     ncf = NeuralCollaborativeFiltering(100, 100, 64)
