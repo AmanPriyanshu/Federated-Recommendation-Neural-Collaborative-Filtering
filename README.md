@@ -4,4 +4,4 @@ Neural Collaborative Filtering (NCF) is a paper published by National University
 Aim to federated this!
 
 ## Demo
-![demo](./output.PNG)
+![demo](/output.png)
