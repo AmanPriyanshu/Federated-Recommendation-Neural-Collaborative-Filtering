@@ -22,10 +22,10 @@ Each client contains a group of users, in the real world this could be considere
 Using the command: `python train_single.py`
 
 ```py
-  dataloader = MovielensDatasetLoader()
-	trainer = NCFTrainer(dataloader.ratings[:50], epochs=20, batch_size=128)
-	ncf_optimizer = torch.optim.Adam(trainer.ncf.parameters(), lr=5e-4)
-	_, progress = trainer.train(ncf_optimizer, return_progress=True)
+dataloader = MovielensDatasetLoader()
+trainer = NCFTrainer(dataloader.ratings[:50], epochs=20, batch_size=128)
+ncf_optimizer = torch.optim.Adam(trainer.ncf.parameters(), lr=5e-4)
+_, progress = trainer.train(ncf_optimizer, return_progress=True)
 ```
 
 ### Run the Federated Aggregator Multi-Client Model
@@ -33,7 +33,7 @@ Using the command: `python train_single.py`
 Using the command: `python train_federated.py`
 
 ```py
-  dataloader = MovielensDatasetLoader()
-	fncf = FederatedNCF(dataloader.ratings, num_clients=50, user_per_client_range=[1, 10], mode="ncf", aggregation_epochs=50, local_epochs=10, batch_size=128)
-	fncf.train()
+dataloader = MovielensDatasetLoader()
+fncf = FederatedNCF(dataloader.ratings, num_clients=50, user_per_client_range=[1, 10], mode="ncf", aggregation_epochs=50, local_epochs=10, batch_size=128)
+fncf.train()
 ```
